@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GST Calc</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&amp;family=Geist:wght@400;500&amp;family=VT323&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "primary": "var(--primary)",
+        "on-primary": "var(--on-primary)",
+        "primary-container": "var(--primary-container)",
+        "on-primary-container": "var(--on-primary-container)",
+        "secondary": "var(--secondary)",
+        "on-secondary": "var(--on-secondary)",
+        "secondary-container": "var(--secondary-container)",
+        "on-secondary-container": "var(--on-secondary-container)",
+        "tertiary": "var(--tertiary)",
+        "on-tertiary": "var(--on-tertiary)",
+        "tertiary-container": "var(--tertiary-container)",
+        "on-tertiary-container": "var(--on-tertiary-container)",
+        "background": "var(--background)",
+        "on-background": "var(--on-background)",
+        "surface": "var(--surface)",
+        "on-surface": "var(--on-surface)",
+        "surface-variant": "var(--surface-variant)",
+        "on-surface-variant": "var(--on-surface-variant)",
+        "outline": "var(--outline)",
+        "outline-variant": "var(--outline-variant)",
+        "surface-container-highest": "var(--surface-container-highest)",
+        "surface-container-high": "var(--surface-container-high)",
+        "surface-container": "var(--surface-container)",
+        "surface-container-low": "var(--surface-container-low)",
+        "surface-container-lowest": "var(--surface-container-lowest)",
+        "error": "var(--error)",
+        "on-error": "var(--on-error)",
+        "error-container": "var(--error-container)",
+        "on-error-container": "var(--on-error-container)"
+      },
+      "borderRadius": {
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+      "spacing": {
+        "lg": "24px",
+        "md": "16px",
+        "sm": "8px",
+        "xs": "4px",
+        "gutter": "24px",
+        "margin-mobile": "16px",
+        "base": "4px",
+        "margin-desktop": "64px",
+        "xl": "32px"
+      },
+      "fontFamily": {
+        "title-md": ["Geist"],
+        "headline-lg": ["Space Grotesk"],
+        "label-md": ["Geist"],
+        "body-lg": ["Geist"],
+        "headline-lg-mobile": ["Space Grotesk"],
+        "display-lg": ["Space Grotesk"],
+        "dot": ["'Ndot'", "'VT323'", "monospace"]
+      }
+    }
+  }
+}
+</script>
+<style>
+:root {
+    /* Light Theme - Material 3 */
+    --primary: #665590;
+    --on-primary: #ffffff;
+    --primary-container: #e9ddff;
+    --on-primary-container: #210f48;
+    --secondary: #625b71;
+    --on-secondary: #ffffff;
+    --secondary-container: #e9def9;
+    --on-secondary-container: #1e182b;
+    --tertiary: #704654;
+    --on-tertiary: #ffffff;
+    --tertiary-container: #ffd9e3;
+    --on-tertiary-container: #31111d;
+    --background: #fdfcff;
+    --on-background: #1c1b1f;
+    --surface: #fdfcff;
+    --on-surface: #1c1b1f;
+    --surface-variant: #e7e0ec;
+    --on-surface-variant: #49454f;
+    --outline: #79747e;
+    --outline-variant: #cac4d0;
+    --surface-container-highest: #e6e0e9;
+    --surface-container-high: #ece6f0;
+    --surface-container: #f3edf7;
+    --surface-container-low: #f7f2fa;
+    --surface-container-lowest: #ffffff;
+    --error: #ba1a1a;
+    --on-error: #ffffff;
+    --error-container: #ffdad6;
+    --on-error-container: #410002;
+}
+
+.dark {
+    /* Dark Theme - Material 3 */
+    --primary: #d0bcff;
+    --on-primary: #381e72;
+    --primary-container: #4f378b;
+    --on-primary-container: #eaddff;
+    --secondary: #ccc2dc;
+    --on-secondary: #332d41;
+    --secondary-container: #4a4458;
+    --on-secondary-container: #e8def8;
+    --tertiary: #efb8c8;
+    --on-tertiary: #492532;
+    --tertiary-container: #633b48;
+    --on-tertiary-container: #ffd8e4;
+    --background: #141218;
+    --on-background: #e6e0e9;
+    --surface: #141218;
+    --on-surface: #e6e0e9;
+    --surface-variant: #49454f;
+    --on-surface-variant: #cac4d0;
+    --outline: #938f99;
+    --outline-variant: #49454f;
+    --surface-container-highest: #36343b;
+    --surface-container-high: #2b2930;
+    --surface-container: #211f26;
+    --surface-container-low: #1d1b20;
+    --surface-container-lowest: #0f0d13;
+    --error: #ffb4ab;
+    --on-error: #690005;
+    --error-container: #93000a;
+    --on-error-container: #ffdad6;
+}
+
+/* Custom styles for animations and specific effects */
+.glow-active {
+    box-shadow: 0 0 15px -3px rgba(208, 188, 255, 0.4);
+    border-color: var(--primary);
+}
+
+.bouncy-transition {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes bouncy-click {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+.animate-bouncy-click {
+    animation: bouncy-click 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bg-gradient-radial {
+    background: radial-gradient(circle at center, var(--tw-gradient-stops));
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--surface-container-lowest);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--outline-variant);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--outline);
+}
+</style>
+</head>
+<body class="bg-background text-on-background min-h-screen relative overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container transition-colors duration-300">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/20 transition-colors duration-300">
+<div class="flex justify-between items-center w-full px-lg md:px-margin-desktop h-20 max-w-[1440px] mx-auto">
+<!-- Brand -->
+<a class="font-dot text-headline-lg font-bold text-primary hover:opacity-80 transition-opacity" href="#">
+    GST Calc
+</a>
+<!-- Navigation Links (Web) -->
+<nav class="hidden md:flex gap-lg items-center">
+<a class="font-label-md text-label-md text-on-surface-variant font-medium hover:bg-primary-container/30 hover:text-primary transition-colors duration-200 px-sm py-xs rounded-lg" href="#history-section">History</a>
+<a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1 hover:bg-primary-container/30 hover:text-primary transition-colors duration-200 px-sm py-xs rounded-lg" href="#calculator-section">Rates</a>
+<a class="font-label-md text-label-md text-on-surface-variant font-medium hover:bg-primary-container/30 hover:text-primary transition-colors duration-200 px-sm py-xs rounded-lg" href="#guide-section">Guide</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-md">
+<button aria-label="Toggle Dark Mode" class="p-2 rounded-[16px] hover:bg-primary-container/30 text-primary transition-all duration-300 bouncy-transition hover:scale-110 active:scale-95 flex items-center justify-center" id="theme-toggle">
+<span class="material-symbols-outlined" id="theme-icon" style="font-variation-settings: 'FILL' 0;">light_mode</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto relative z-10 flex flex-col items-center justify-start gap-12 md:gap-24">
+<section class="w-full flex flex-col items-center justify-center min-h-[calc(100vh-200px)] scroll-mt-24" id="calculator-section">
+<div class="text-center mb-xl">
+<h1 class="font-display-lg text-display-lg text-primary mb-sm tracking-tight drop-shadow-md">Precision Calculation</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Fast, accurate GST computation with high-contrast visibility for professional environments.</p>
+</div>
+<!-- Glassmorphism Calculator Card -->
+<div class="w-full max-w-4xl bg-surface-container-low/60 backdrop-blur-xl border border-outline-variant/20 rounded-[40px] p-xl md:p-[48px] shadow-2xl relative overflow-hidden group hover:border-primary/30 transition-colors duration-500">
+<!-- Subtle internal glow -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none rounded-[40px]"></div>
+<div class="relative z-10 flex flex-col gap-xl">
+<!-- Input Section -->
+<div class="flex flex-col gap-md relative">
+<label class="font-title-md text-title-md text-primary tracking-wide" for="amount">NET AMOUNT</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 font-display-lg text-display-lg text-on-surface-variant/50">₹</span>
+<input class="w-full bg-surface-container-highest/50 border-0 border-b-2 border-outline-variant text-on-surface font-display-lg text-display-lg pl-16 pr-4 py-md focus:ring-0 focus:border-primary focus:bg-surface-container-highest transition-all duration-300 outline-none rounded-t-[16px] font-bold tracking-tight" id="amount" placeholder="0.00" type="number" value="100000"/>
+</div>
+</div>
+<!-- Controls Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<!-- Type Toggle -->
+<div class="flex flex-col gap-sm">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Calculation Type</span>
+<div class="flex bg-surface-container-highest rounded-[24px] p-1 border border-outline-variant/30">
+<button class="flex-1 py-3 px-4 rounded-[20px] bg-primary-container text-on-primary-container font-title-md text-title-md bouncy-transition shadow-sm transition-all duration-300 hover:scale-105 active:scale-95" data-calc-type="inclusive" id="calc-inclusive">Inclusive</button>
+<button class="flex-1 py-3 px-4 rounded-[20px] text-on-surface-variant font-title-md text-title-md hover:bg-surface-variant transition-all duration-300 hover:scale-105 active:scale-95" data-calc-type="exclusive" id="calc-exclusive">Exclusive</button>
+</div>
+</div>
+<!-- Rate Selection -->
+<div class="flex flex-col gap-sm">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">GST Rate</span>
+<div class="flex flex-wrap gap-2" id="rate-container">
+<button class="flex-1 min-w-[60px] px-5 py-3 rounded-[20px] border border-outline-variant/30 text-on-surface font-title-md text-title-md hover:bg-surface-variant transition-all duration-300 hover:scale-105 active:scale-95 rate-btn" data-rate="5">5%</button>
+<button class="flex-1 min-w-[60px] px-5 py-3 rounded-[20px] border border-outline-variant/30 text-on-surface font-title-md text-title-md hover:bg-surface-variant transition-all duration-300 hover:scale-105 active:scale-95 rate-btn" data-rate="12">12%</button>
+<button class="flex-1 min-w-[60px] px-5 py-3 rounded-[20px] bg-tertiary text-on-tertiary font-title-md text-title-md font-bold bouncy-transition shadow-sm glow-active border-tertiary transition-all duration-300 hover:scale-105 active:scale-95 rate-btn" data-rate="18">18%</button>
+<button class="flex-1 min-w-[60px] px-5 py-3 rounded-[20px] border border-outline-variant/30 text-on-surface font-title-md text-title-md hover:bg-surface-variant transition-all duration-300 hover:scale-105 active:scale-95 rate-btn" data-rate="28">28%</button>
+</div>
+</div>
+</div>
+<div class="w-full h-px bg-outline-variant/20 my-sm"></div>
+<!-- Results Bento Grid -->
+<div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+<!-- Base -->
+<div class="col-span-2 md:col-span-2 bg-surface-container rounded-[24px] p-md border border-outline-variant/10 flex flex-col justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant mb-2">Base Value</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold break-words" id="base-value">84,745.76</span>
+</div>
+<!-- CGST/SGST/IGST Breakdown -->
+<div class="col-span-2 md:col-span-2 flex flex-col gap-4">
+<div class="bg-surface-container rounded-[20px] p-md border border-outline-variant/10 flex-1 flex flex-col justify-center">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant" id="cgst-label">CGST (9%)</span>
+<span class="font-label-md text-[10px] text-on-surface-variant px-2 py-0.5 rounded-full border border-outline-variant/30">Intra-state</span>
+</div>
+<span class="font-title-md text-title-md text-secondary break-words" id="cgst-value">7,627.12</span>
+</div>
+<div class="bg-surface-container rounded-[20px] p-md border border-outline-variant/10 flex-1 flex flex-col justify-center">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant" id="sgst-label">SGST (9%)</span>
+<span class="font-label-md text-[10px] text-on-surface-variant px-2 py-0.5 rounded-full border border-outline-variant/30">Intra-state</span>
+</div>
+<span class="font-title-md text-title-md text-secondary break-words" id="sgst-value">7,627.12</span>
+</div>
+</div>
+<!-- Total Amount & IGST -->
+<div class="col-span-2 md:col-span-2 flex flex-col gap-4">
+<div class="bg-surface-container-high rounded-[20px] p-md border border-outline-variant/20 flex-none flex flex-col justify-center">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-md text-label-md text-primary font-medium" id="igst-label">IGST (18%)</span>
+<span class="font-label-md text-[10px] text-primary px-2 py-0.5 rounded-full border border-primary/30 bg-primary/10">Inter-state</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface font-bold break-words" id="igst-value">15,254.24</span>
+</div>
+<div class="bg-primary-container rounded-[28px] p-lg border border-primary/20 flex-1 flex flex-col justify-end relative overflow-hidden group-hover:shadow-[0_0_40px_-10px_rgba(208,188,255,0.3)] transition-shadow duration-500 min-h-[140px]">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-primary opacity-20 rounded-[40px] blur-2xl"></div>
+<span class="font-label-md text-label-md text-on-primary-container/80 uppercase tracking-widest mb-1 relative z-10">Total Amount</span>
+<div class="flex items-baseline gap-2 relative z-10 w-full overflow-hidden">
+<span class="font-headline-lg text-[24px] md:text-[28px] text-on-primary-container/70">₹</span>
+<span class="font-dot text-[36px] md:text-[44px] leading-[1.1] text-on-primary-container font-bold tracking-tight truncate" id="total-amount">1,00,000.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="flex justify-end gap-md mt-md">
+<button class="px-6 py-3 rounded-[24px] border border-outline-variant text-on-surface font-title-md text-title-md hover:bg-surface-variant transition-all duration-300 flex items-center gap-2 bouncy-transition hover:scale-105 active:scale-95" id="copy-btn">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+    Copy Results
+</button>
+<button class="px-8 py-3 rounded-[24px] bg-primary text-on-primary font-title-md text-title-md font-bold hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 bouncy-transition hover:scale-105 active:scale-95 shadow-lg shadow-primary/20" id="save-btn">
+<span class="material-symbols-outlined text-[20px]">save</span>
+    Save Calculation
+</button>
+</div>
+<!-- Notification toast -->
+<div id="toast" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-surface-container-highest text-on-surface px-6 py-3 rounded-full shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+    Action successful
+</div>
+</div>
+</div>
+</section>
+
+<!-- History Section -->
+<section class="w-full max-w-5xl flex flex-col gap-xl scroll-mt-24" id="history-section">
+<div class="flex justify-between items-end border-b border-outline-variant/20 pb-4">
+    <div class="text-left">
+    <h2 class="font-headline-lg text-headline-lg text-primary mb-2">History</h2>
+    <p class="font-body-lg text-body-lg text-on-surface-variant">Your recently saved calculations will appear here.</p>
+    </div>
+    <button id="clear-history-btn" class="px-4 py-2 rounded-xl border border-outline-variant text-on-surface-variant font-label-md hover:bg-error-container hover:text-on-error-container hover:border-error-container transition-colors duration-300 flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">delete</span> Clear All
+    </button>
+</div>
+
+<div id="history-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- History items will be inserted here by JS -->
+    <div id="empty-history" class="col-span-1 md:col-span-2 bg-surface-container-low rounded-[24px] p-8 border border-outline-variant/20 flex flex-col items-center justify-center text-center gap-4">
+        <span class="material-symbols-outlined text-[48px] text-outline-variant/50">history</span>
+        <p class="text-on-surface-variant font-body-lg">No saved calculations yet.</p>
+    </div>
+</div>
+</section>
+
+<!-- Educational Guide Section -->
+<section class="w-full max-w-5xl flex flex-col gap-xl scroll-mt-24" id="guide-section">
+<div class="text-center md:text-left mb-4">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-2">Comprehensive GST Guide</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Understand the components, slabs, and mechanisms of the Goods and Services Tax.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Card 1: Intra-state vs Inter-state -->
+<div class="bg-surface-container-low rounded-[32px] p-lg md:p-xl border border-outline-variant/10 shadow-lg flex flex-col gap-md transition-all duration-300 hover:border-primary/20 hover:bg-surface-container">
+<div class="flex items-center gap-4 mb-2">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<h3 class="font-headline-lg text-[24px] font-semibold text-on-surface">Tax Components</h3>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-title-md text-title-md text-primary font-semibold">CGST &amp; SGST (Intra-state)</h4>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-4">Applied to transactions within the same state. The total GST rate is split equally: half goes to the Central Government (CGST) and half to the State Government (SGST).</p>
+<h4 class="font-title-md text-title-md text-secondary font-semibold">IGST (Inter-state)</h4>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Applied to transactions between different states. The full GST rate is collected by the Central Government and then shared with the destination state.</p>
+</div>
+</div>
+<!-- Card 2: ITC -->
+<div class="bg-surface-container-low rounded-[32px] p-lg md:p-xl border border-outline-variant/10 shadow-lg flex flex-col gap-md transition-all duration-300 hover:border-tertiary/20 hover:bg-surface-container">
+<div class="flex items-center gap-4 mb-2">
+<div class="w-12 h-12 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined">currency_exchange</span>
+</div>
+<h3 class="font-headline-lg text-[24px] font-semibold text-on-surface">Input Tax Credit (ITC)</h3>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    ITC is a fundamental mechanism of GST designed to eliminate the cascading effect of taxes ("tax on tax"). It allows businesses to claim credit for taxes paid on purchases and use it to offset the taxes payable on final sales.
+                </p>
+<div class="mt-auto bg-surface-container-highest p-4 rounded-2xl border border-outline-variant/20">
+<p class="font-label-md text-label-md text-on-surface italic">Essentially, you only pay tax on the value added at your stage of the supply chain, serving as a vital anti-inflationary tool.</p>
+</div>
+</div>
+<!-- Card 3: Slabs -->
+<div class="md:col-span-2 bg-surface-container-low rounded-[32px] p-lg md:p-xl border border-outline-variant/10 shadow-lg flex flex-col gap-md transition-all duration-300 hover:border-secondary/20 hover:bg-surface-container">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined">layers</span>
+</div>
+<h3 class="font-headline-lg text-[24px] font-semibold text-on-surface">Standard Tax Slabs</h3>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="flex flex-col gap-2 p-4 rounded-[20px] border border-outline-variant/20 bg-surface">
+<span class="font-display-lg text-[32px] text-primary">5%</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Essential items like basic food grains, life-saving drugs, and standard transport services.</span>
+</div>
+<div class="flex flex-col gap-2 p-4 rounded-[20px] border border-outline-variant/20 bg-surface">
+<span class="font-display-lg text-[32px] text-primary">12%</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Processed foods, computers, mobiles, and mid-range services.</span>
+</div>
+<div class="flex flex-col gap-2 p-4 rounded-[20px] border border-outline-variant/20 bg-surface">
+<span class="font-display-lg text-[32px] text-secondary">18%</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Capital goods, industrial intermediaries, banking, and standard IT services.</span>
+</div>
+<div class="flex flex-col gap-2 p-4 rounded-[20px] border border-outline-variant/20 bg-surface">
+<span class="font-display-lg text-[32px] text-tertiary">28%</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Luxury items, automobiles, aerated drinks, and high-end consumer durables.</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant/10 relative z-20 transition-colors duration-300 mt-24">
+<div class="flex flex-col md:flex-row justify-between items-center w-full py-xl px-lg md:px-margin-desktop gap-md max-w-[1440px] mx-auto">
+<div class="font-title-md text-title-md font-bold text-on-surface">
+                GST Calc
+            </div>
+<nav class="flex gap-lg">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">About GST</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Tax Slab Rules</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
+</nav>
+<div class="font-body-lg text-body-lg text-on-surface-variant">
+                © 2024 GST Calc. All rights reserved.
+            </div>
+</div>
+</footer>
+<script>
+    // Simple micro-interactions simulation for bouncy feel
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', function() {
+            this.classList.add('animate-bouncy-click');
+            setTimeout(() => {
+                this.classList.remove('animate-bouncy-click');
+            }, 300);
+        });
+    });
+
+    // Input focus effect
+    const amountInput = document.getElementById('amount');
+    amountInput.addEventListener('focus', function() {
+        this.parentElement.parentElement.classList.add('glow-active');
+    });
+    amountInput.addEventListener('blur', function() {
+        this.parentElement.parentElement.classList.remove('glow-active');
+    });
+
+    // Toast Notification
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.remove('opacity-0');
+        setTimeout(() => {
+            toast.classList.add('opacity-0');
+        }, 2000);
+    }
+
+    // Copy Results
+    document.getElementById('copy-btn').addEventListener('click', function() {
+        const textToCopy = `Net Amount: ₹${amountInput.value || 0}\nGST Rate: ${currentRate}%\nType: ${isInclusive ? 'Inclusive' : 'Exclusive'}\nBase Value: ₹${baseValueEl.textContent}\nCGST: ₹${cgstValueEl.textContent}\nSGST: ₹${sgstValueEl.textContent}\nIGST: ₹${igstValueEl.textContent}\nTotal Amount: ₹${totalAmountEl.textContent}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            showToast('Results copied to clipboard!');
+        }).catch(err => {
+            showToast('Failed to copy results.');
+        });
+    });
+
+    // GST Calculation Logic
+    let currentRate = 18;
+    let isInclusive = true;
+
+    const baseValueEl = document.getElementById('base-value');
+    const cgstLabelEl = document.getElementById('cgst-label');
+    const cgstValueEl = document.getElementById('cgst-value');
+    const sgstLabelEl = document.getElementById('sgst-label');
+    const sgstValueEl = document.getElementById('sgst-value');
+    const igstLabelEl = document.getElementById('igst-label');
+    const igstValueEl = document.getElementById('igst-value');
+    const totalAmountEl = document.getElementById('total-amount');
+
+    function formatCurrency(num) {
+        return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateGST() {
+        const netAmount = parseFloat(amountInput.value) || 0;
+        let base, total, cgst, sgst, igst;
+
+        if (isInclusive) {
+            base = netAmount / (1 + currentRate / 100);
+            total = netAmount;
+        } else {
+            base = netAmount;
+            total = netAmount + (netAmount * currentRate / 100);
+        }
+
+        cgst = sgst = (base * currentRate / 200);
+        igst = (base * currentRate / 100);
+
+        baseValueEl.textContent = formatCurrency(base);
+        cgstValueEl.textContent = formatCurrency(cgst);
+        sgstValueEl.textContent = formatCurrency(sgst);
+        igstValueEl.textContent = formatCurrency(igst);
+        totalAmountEl.textContent = formatCurrency(total);
+        
+        cgstLabelEl.textContent = `CGST (${currentRate / 2}%)`;
+        sgstLabelEl.textContent = `SGST (${currentRate / 2}%)`;
+        igstLabelEl.textContent = `IGST (${currentRate}%)`;
+    }
+
+    amountInput.addEventListener('input', calculateGST);
+
+    // Rate selection
+    document.querySelectorAll('.rate-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.rate-btn').forEach(b => {
+                b.classList.remove('bg-tertiary', 'text-on-tertiary', 'font-bold', 'glow-active', 'border-tertiary');
+                b.classList.add('border-outline-variant/30', 'text-on-surface');
+            });
+            this.classList.add('bg-tertiary', 'text-on-tertiary', 'font-bold', 'glow-active', 'border-tertiary');
+            this.classList.remove('border-outline-variant/30', 'text-on-surface');
+            currentRate = parseFloat(this.getAttribute('data-rate'));
+            calculateGST();
+        });
+    });
+
+    // Type toggle
+    const calcInclusiveBtn = document.getElementById('calc-inclusive');
+    const calcExclusiveBtn = document.getElementById('calc-exclusive');
+
+    calcInclusiveBtn.addEventListener('click', function() {
+        isInclusive = true;
+        this.classList.add('bg-primary-container', 'text-on-primary-container');
+        this.classList.remove('text-on-surface-variant');
+        calcExclusiveBtn.classList.remove('bg-primary-container', 'text-on-primary-container');
+        calcExclusiveBtn.classList.add('text-on-surface-variant');
+        calculateGST();
+    });
+
+    calcExclusiveBtn.addEventListener('click', function() {
+        isInclusive = false;
+        this.classList.add('bg-primary-container', 'text-on-primary-container');
+        this.classList.remove('text-on-surface-variant');
+        calcInclusiveBtn.classList.remove('bg-primary-container', 'text-on-primary-container');
+        calcInclusiveBtn.classList.add('text-on-surface-variant');
+        calculateGST();
+    });
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const htmlElement = document.documentElement;
+    
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        htmlElement.classList.remove('dark');
+        themeIcon.textContent = 'dark_mode';
+    } else {
+        htmlElement.classList.add('dark');
+        themeIcon.textContent = 'light_mode';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        const isDark = htmlElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+    });
+
+    // History Management
+    let history = JSON.parse(localStorage.getItem('gstHistory')) || [];
+    const historyListEl = document.getElementById('history-list');
+    const emptyHistoryEl = document.getElementById('empty-history');
+
+    function renderHistory() {
+        const cards = historyListEl.querySelectorAll('.history-card');
+        cards.forEach(card => card.remove());
+
+        if (history.length === 0) {
+            emptyHistoryEl.style.display = 'flex';
+            return;
+        }
+
+        emptyHistoryEl.style.display = 'none';
+
+        history.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'history-card bg-surface-container rounded-[24px] p-5 border border-outline-variant/20 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:border-primary/30 transition-colors duration-300';
+            card.innerHTML = `
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-label-md px-2 py-1 bg-primary-container text-on-primary-container rounded-md">${item.type}</span>
+                        <span class="font-label-md px-2 py-1 bg-tertiary-container text-on-tertiary-container rounded-md">${item.rate}% GST</span>
+                        <span class="text-on-surface-variant text-[12px] font-label-md">${new Date(item.timestamp).toLocaleString()}</span>
+                    </div>
+                    <div class="font-title-md text-on-surface mt-1">Input Amount: <span class="font-bold">₹${item.input}</span></div>
+                </div>
+                <div class="flex flex-col sm:items-end gap-1 bg-surface-container-highest p-3 rounded-xl">
+                    <div class="font-label-md text-on-surface-variant">Total: <span class="font-bold text-on-surface text-[14px]">₹${item.total}</span></div>
+                    <div class="font-label-md text-on-surface-variant">GST: <span class="text-secondary font-bold text-[14px]">₹${item.gst}</span></div>
+                </div>
+            `;
+            historyListEl.appendChild(card);
+        });
+    }
+
+    document.getElementById('save-btn').addEventListener('click', function() {
+        const netAmount = parseFloat(amountInput.value) || 0;
+        if (netAmount <= 0) return showToast('Please enter a valid amount');
+
+        let base, total, totalGstAmount;
+        if (isInclusive) {
+            base = netAmount / (1 + currentRate / 100);
+            total = netAmount;
+        } else {
+            base = netAmount;
+            total = netAmount + (netAmount * currentRate / 100);
+        }
+        totalGstAmount = total - base;
+
+        const newHistoryItem = {
+            id: Date.now(),
+            timestamp: new Date().toISOString(),
+            input: formatCurrency(netAmount),
+            type: isInclusive ? 'Inclusive' : 'Exclusive',
+            rate: currentRate,
+            total: formatCurrency(total),
+            gst: formatCurrency(totalGstAmount)
+        };
+
+        history.unshift(newHistoryItem);
+        if (history.length > 10) history.pop(); // Keep only latest 10 items
+
+        localStorage.setItem('gstHistory', JSON.stringify(history));
+        renderHistory();
+        showToast('Calculation saved to History');
+    });
+
+    document.getElementById('clear-history-btn').addEventListener('click', function() {
+        if(confirm('Are you sure you want to clear all history?')) {
+            history = [];
+            localStorage.removeItem('gstHistory');
+            renderHistory();
+            showToast('History cleared');
+        }
+    });
+
+    // Initial load
+    calculateGST();
+    renderHistory();
+</script>
+</body>
+</html>
